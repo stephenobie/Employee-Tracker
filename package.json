@@ -1,0 +1,24 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephenobie/Employee-Tracker.git"
+  },
+  "author": "Stephen Obie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stephenobie/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/stephenobie/Employee-Tracker#readme",
+  "dependencies": {
+    "inquirer": "^8.1.1",
+    "mysql": "^2.18.1"
+  }
+}
