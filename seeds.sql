@@ -26,7 +26,7 @@ VALUE ("Lawyer", 225000, 4);
 
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUE ("Stphen", "Obie", 1, 1);
+VALUE ("Stephen", "Obie", 1, 1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUE ("Kyle", "Brewin", 4, 2);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
