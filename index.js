@@ -35,7 +35,7 @@ const connection = mysql.createConnection({
             },
             {
               name: "Update Employee Role",
-              value: "UPDATE_EMPLOYEE_ROLE"
+              value: "UPDATE_ROLE"
             },
             {
               name: "View All Roles",
@@ -74,14 +74,14 @@ const connection = mysql.createConnection({
             addEmploy();
             break;
   
-          case 'UPDATE_EMPLOYEE_ROLE':
+          case 'UPDATE_ROLE':
             updateRole();
             break;
   
           case 'VIEW_ROLES':
             allRoles();
             break;
-          case 'ADD_EMPLOYEE_ROLE':
+          case 'ADD_ROLE':
             addRole();
             break;
 
@@ -203,5 +203,101 @@ const allEmploy = () => {
                 )
               });
           };
-      
 
+          const addRole = () => {
+            inquirer.prompt([
+              {
+                name: "title",
+                type: "input",
+                message: "What is the title of the new role you wish to add?",
+            },
+            {
+              name: "salary",
+              type: "input",
+              message: "What will be the salary for the new role?",
+          },
+          {
+            name: "department",
+            type: "list",
+            message: "What department will this new role be in? 1 = Sales, 2 = Engineering, 3 = Finance, and 4 = Legal.",
+            choices: ['1','2','3','4'],
+            
+        },
+          ])
+              .then(function (answer) {
+                connection.query('INSERT INTO role SET ?',
+                {
+                  title: answer.title,
+                  salary: answer.salary,
+                  department_id: answer.department,
+                },
+                (err) => {
+                  if (err) throw err;
+                  console.log('The new role was added successfully!');
+                  allRoles();
+                }
+                )
+              });
+          };
+
+          const  updateRole = () => {
+            connection.query("SELECT * FROM employee", function (err, result) {
+              if (err) throw err;
+              inquirer
+                .prompt([
+                  {
+                    name: "employeeName",
+                    type: "list",
+                    message: "which employee's role would you like to change?",
+                    choices: function () {
+                      employeeArray = [];
+                      result.forEach((result) => {
+                        employeeArray.push(result.first_name);
+                      });
+                      return employeeArray;
+                    },
+                  },
+                ])
+                .then(function (answer) {
+                  const employName = answer.employeeName;
+                  connection.query("SELECT * FROM role", function (err, res) {
+                    inquirer
+                      .prompt([
+                        {
+                          name: "role",
+                          type: "list",
+                          message: "What is their new role?",
+                          choices: function () {
+                            rolesArray = [];
+                            res.forEach((res) => {
+                              rolesArray.push(res.title);
+                            });
+                            return rolesArray;
+                          },
+                        },
+                      ])
+                      .then(function (rolesAnswer) {
+                        const role = rolesAnswer.role;
+                        console.log(rolesAnswer.role);
+                        connection.query(
+                          "SELECT * FROM role WHERE title = ?",
+                          [role],
+                          function (err, res) {
+                            if (err) throw err;
+                            let roleId = res[0].id;
+                            let query =
+                              "UPDATE employee SET role_id ? WHERE first_name ?";
+                            let values = [roleId, employName];
+                            console.log(values);
+                            connection.query(query, values, function (err, res, fields) {
+                                console.log(`You have updated ${employName}'s role to ${role}.`
+                                );
+                              }
+                            );
+                            allEmploy();
+                          }
+                        );
+                      });
+      
+              })})
+            })};
